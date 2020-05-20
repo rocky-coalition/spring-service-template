@@ -1,0 +1,50 @@
+database:
+  driver-class-name: org.postgresql.Driver
+
+sns:
+  topics: >
+    ${spring.profiles.active}-sample-topic
+
+aws:
+  instance-profile: true
+  secretsmanager:
+    name: ${spring.profiles.active}/distribution/spring-service-template
+  secretslist: >
+    database.username,
+    database.password,
+    database.host,
+    database.port,
+    database.name
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+cloud:
+  aws:
+    credentials:
+      instance-profile: true
+    stack:
+      auto: true
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        health: readiness
+        info: healthz
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      datadog:
+        enabled: true
+
+info:
+  service:
+    name: Spring Service Template
+    description: Template service to provide an easy starter for new spring boot servies
+    version: v1.0.0-SNAPSHOT

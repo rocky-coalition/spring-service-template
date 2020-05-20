@@ -1,0 +1,50 @@
+version: '3.7'
+services:
+  source-db:
+    image: library/postgres:12
+    restart: always
+    volumes:
+      - ./pg:/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=localuser
+      - POSTGRES_PASSWORD=Pa55w.rd
+      - POSTGRES_DB=sample_db
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+      - "4568:4568"
+      - "4584:4584"
+      - "4575:4575"
+    environment:
+      - SERVICES=secretsmanager, sns
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - './.localstack:/tmp/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+#  cdc-streaming-service:
+#    container_name: cdc-streaming-service
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    volumes:
+#    - log_data:/app/logs
+#    ports:
+#    - "8001:8080"
+#    - "5006:5005"
+#    links:
+#    - source-db
+#    - localstack
+#    depends_on:
+#    - source-db
+#    - localstack
+#    environment:
+#    - ENV=local-docker
+
+
+volumes:
+  log_data:
+    external: false
